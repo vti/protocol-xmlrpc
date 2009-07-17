@@ -44,6 +44,5 @@ $res = Protocol::XMLRPC::MethodResponse->parse($xml);
 is_deeply($res->param, {fooBar => 18, barFoo => 'foo'});
 is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><struct><member><name>fooBar</name><value><i4>18</i4></value></member><member><name>barFoo</name><value><string>foo</string></value></member></struct></value></param></params></methodResponse>|);
 
-$res = Protocol::XMLRPC::MethodResponse->new;
-$res->param(123);
+$res = Protocol::XMLRPC::MethodResponse->new(123);
 is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><i4>123</i4></value></param></params></methodResponse>|);

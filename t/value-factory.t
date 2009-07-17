@@ -12,7 +12,7 @@ my $value;
 $value = Protocol::XMLRPC::ValueFactory->build();
 ok(not defined $value);
 
-$value = Protocol::XMLRPC::ValueFactory->build(1);
+$value = Protocol::XMLRPC::ValueFactory->build(-1);
 ok($value->isa('Protocol::XMLRPC::Value::Integer'));
 
 $value = Protocol::XMLRPC::ValueFactory->build(1.2);

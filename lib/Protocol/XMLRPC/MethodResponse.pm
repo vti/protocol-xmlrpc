@@ -14,6 +14,38 @@ has _fault => (
     is      => 'rw'
 );
 
+sub new {
+    my $class = shift;
+
+    my $param;
+
+    if (@_ == 1) {
+        $param = shift;
+    }
+
+    my $self = $class->SUPER::new(@_);
+
+    $self->param($param) if defined $param;
+
+    return $self;
+}
+
+sub new_fault {
+    my $class = shift;
+    my ($code, $string) = @_;
+
+    my $self = $class->new();
+
+    $self->_fault(
+        Protocol::XMLRPC::Value::Struct->new(
+            faultCode   => $code,
+            faultString => $string
+        )
+    );
+
+    return $self;
+}
+
 sub param {
     my $self = shift;
 

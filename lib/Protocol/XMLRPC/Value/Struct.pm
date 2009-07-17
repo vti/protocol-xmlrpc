@@ -1,6 +1,8 @@
 package Protocol::XMLRPC::Value::Struct;
 use Any::Moose;
 
+use Protocol::XMLRPC::ValueFactory;
+
 has _members => (
     isa     => 'ArrayRef',
     is      => 'rw',
@@ -12,19 +14,22 @@ use overload '""' => sub { shift->to_string }, fallback => 1;
 sub new {
     my $class = shift;
 
-    my %values;
+    my @values;
 
     if (@_ == 1) {
-        %values = ref($_[0]) eq 'HASH' ? %{$_[0]} : ($_[0]);
+        @values = ref($_[0]) eq 'HASH' ? %{$_[0]} : ($_[0]);
     }
     else {
-        %values = @_;
+        @values = @_;
     }
 
     my $self = $class->SUPER::new;
 
-    foreach my $key (keys %values) {
-        $self->add_member($key => $values{$key});
+    for (my $i = 0; $i < @values; $i += 2) {
+        my $name  = $values[$i];
+        my $value = $values[$i + 1];
+
+        $self->add_member($name => $value);
     }
 
     return $self;
@@ -35,9 +40,7 @@ sub add_member {
     my ($key, $value) = @_;
 
     push @{$self->_members},
-      (   $key => ref($value)
-        ? $value
-        : Protocol::XMLRPC::Value::String->new(value => $value));
+      ($key => Protocol::XMLRPC::ValueFactory->build($value));
 }
 
 sub value {

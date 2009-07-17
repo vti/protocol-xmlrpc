@@ -48,7 +48,7 @@ sub call {
             my $headers = $args->{headers};
             my $body    = $args->{body};
 
-            return $cb->($self) unless $status == 200;
+            return $cb->($self) unless $status && $status == 200;
 
             return $cb->(
                 $self, Protocol::XMLRPC::MethodResponse->parse($body)
