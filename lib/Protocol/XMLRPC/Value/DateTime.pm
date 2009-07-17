@@ -1,17 +1,17 @@
 package Protocol::XMLRPC::Value::DateTime;
 use Any::Moose;
 
+extends 'Protocol::XMLRPC::Value';
+
 has value => (
     isa => 'Int',
     is  => 'rw'
 );
 
-use overload '""' => sub { shift->to_string }, fallback => 1;
-
 require Time::Local;
 
 sub parse {
-    my $self = shift;
+    my $class = shift;
     my ($datetime) = @_;
 
     my ($year, $month, $mday, $hour, $minute, $second) =
@@ -27,9 +27,7 @@ sub parse {
 
     return if $@ || $epoch < 0;
 
-    $self->value($epoch);
-
-    return $self;
+    return $class->new($epoch);
 }
 
 sub to_string {

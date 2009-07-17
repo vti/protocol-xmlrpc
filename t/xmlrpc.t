@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use Protocol::XMLRPC;
-use Protocol::XMLRPC::MethodCall;
+use Protocol::XMLRPC::Value::String;
 
 my $xmlrpc = Protocol::XMLRPC->new(
     http_req_cb => sub {
@@ -17,17 +17,20 @@ my $xmlrpc = Protocol::XMLRPC->new(
 
         my $body = '';
 
-        if ($url eq 'http://foo.bar.com/') {
-            $body =<<'';
-<?xml version="1.0"?>
-<methodResponse>
-   <params>
-      <param>
-         <value><string>South Dakota</string></value>
-         </param>
-      </params>
-</methodResponse>
-
+        if ($url eq '1') {
+            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params></params></methodCall>');
+        }
+        elsif ($url eq '2') {
+            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><i4>1</i4></value></param></params></methodCall>');
+        }
+        elsif ($url eq '3') {
+            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>');
+        }
+        elsif ($url eq 'array') {
+            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>');
+        }
+        elsif ($url eq 'struct') {
+            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>');
         }
 
         $cb->(
@@ -37,13 +40,32 @@ my $xmlrpc = Protocol::XMLRPC->new(
     }
 );
 
-my $method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
+$xmlrpc->call(
+    '1' => 'foo.bar' => sub {
+        my ($self, $method_response) = @_;
+    }
+);
 
 $xmlrpc->call(
-    'http://foo.bar.com/' => $method_call => sub {
+    '2' => 'foo.bar' => 1 => sub {
         my ($self, $method_response) = @_;
+    }
+);
 
-        ok($method_response);
-        ok($method_response->isa('Protocol::XMLRPC::MethodResponse'));
+$xmlrpc->call(
+    '3' => 'foo.bar' => Protocol::XMLRPC::Value::String->new(1) => sub {
+        my ($self, $method_response) = @_;
+    }
+);
+
+$xmlrpc->call(
+    'array' => 'foo.bar' => [Protocol::XMLRPC::Value::String->new(1)] => sub {
+        my ($self, $method_response) = @_;
+    }
+);
+
+$xmlrpc->call(
+    'struct' => 'foo.bar' => {foo => 'bar'} => sub {
+        my ($self, $method_response) = @_;
     }
 );

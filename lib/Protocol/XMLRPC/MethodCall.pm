@@ -1,7 +1,9 @@
 package Protocol::XMLRPC::MethodCall;
 use Any::Moose;
 
-use Protocol::XMLRPC::Value::String;
+extends 'Protocol::XMLRPC::Method';
+
+use Protocol::XMLRPC::ValueFactory;
 
 has name => (
     required => 1,
@@ -15,14 +17,40 @@ has _params => (
     default => sub { [] }
 );
 
-use overload '""' => sub { shift->to_string }, fallback => 1;
-
 sub add_param {
     my $self = shift;
     my $param = shift;
 
-    push @{$self->_params},
-      ref($param) ? $param : Protocol::XMLRPC::Value::String->new(value => $param);
+    push @{$self->_params}, Protocol::XMLRPC::ValueFactory->build($param);
+}
+
+sub _parse_document {
+    my $class = shift;
+    my ($doc) = @_;
+
+    my ($method_call) = $doc->getElementsByTagName('methodCall');
+    return unless $method_call;
+
+    my ($name) = $method_call->getElementsByTagName('methodName');
+    return unless $name;
+
+    my $self = $class->new(name => $name->textContent);
+
+    if (my ($params) = $method_call->getElementsByTagName('params')) {
+        my @params = $params->getElementsByTagName('param');
+        foreach my $param (@params) {
+            my ($value) = $param->getElementsByTagName('value');
+
+            if (my $param = $self->_parse_value($value)) {
+                push @{$self->_params}, $param;
+            }
+            else {
+                return;
+            }
+        }
+    }
+
+    return $self;
 }
 
 sub to_string {

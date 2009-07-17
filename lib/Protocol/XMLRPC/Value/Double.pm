@@ -1,12 +1,12 @@
 package Protocol::XMLRPC::Value::Double;
 use Any::Moose;
 
+extends 'Protocol::XMLRPC::Value';
+
 has value => (
     isa => 'Num',
     is  => 'rw'
 );
-
-use overload '""' => sub { shift->to_string }, fallback => 1;
 
 sub to_string {
     my $self = shift;

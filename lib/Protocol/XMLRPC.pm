@@ -1,6 +1,7 @@
 package Protocol::XMLRPC;
 use Any::Moose;
 
+use Protocol::XMLRPC::MethodCall;
 use Protocol::XMLRPC::MethodResponse;
 
 our $VERSION = '0.01';
@@ -15,7 +16,7 @@ has http_req_cb => (
 has user_agent => (
     isa     => 'Str',
     is      => 'rw',
-    default => 'foo'
+    default => 'protocol-xmlrpc'
 );
 
 # debugging
@@ -27,10 +28,15 @@ has debug => (
 
 sub call {
     my $self = shift;
-    my ($url, $method_call, $cb) = @_;
+    my ($url, $method_name, $args, $cb) = @_;
+
+    ($cb, $args) = ($args, undef) unless $cb;
 
     my $headers =
       {'User-Agent' => $self->user_agent, 'Content-Type' => 'text/xml'};
+
+    my $method_call = Protocol::XMLRPC::MethodCall->new(name => $method_name);
+    $method_call->add_param($args) if $args;
 
     $self->http_req_cb->(
         $self, $url,
@@ -45,7 +51,7 @@ sub call {
             return $cb->($self) unless $status == 200;
 
             return $cb->(
-                $self, Protocol::XMLRPC::MethodResponse->new->parse($body)
+                $self, Protocol::XMLRPC::MethodResponse->parse($body)
             );
         }
     );

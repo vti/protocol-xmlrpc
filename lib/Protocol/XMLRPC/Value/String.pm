@@ -1,12 +1,7 @@
 package Protocol::XMLRPC::Value::String;
 use Any::Moose;
 
-has value => (
-    isa => 'Str',
-    is  => 'rw'
-);
-
-use overload '""' => sub { shift->to_string }, fallback => 1;
+extends 'Protocol::XMLRPC::Value';
 
 sub to_string {
     my $self = shift;

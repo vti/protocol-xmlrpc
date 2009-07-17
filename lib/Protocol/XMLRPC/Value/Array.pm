@@ -9,10 +9,25 @@ has _data => (
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
-sub data {
-    my $self = shift;
+sub new {
+    my $class = shift;
 
-    return @{$self->_data};
+    my @values;
+
+    if (@_ == 1) {
+        @values = ref($_[0]) eq 'ARRAY' ? @{$_[0]} : ($_[0]);
+    }
+    else {
+        @values = @_;
+    }
+
+    my $self = $class->SUPER::new;
+
+    foreach my $value (@values) {
+        $self->add_data($value);
+    }
+
+    return $self;
 }
 
 sub add_data {
@@ -26,6 +41,12 @@ sub clone {
     my $self = shift;
 
     return ref($self)->new(_data => [@{$self->_data}]);
+}
+
+sub value {
+    my $self = shift;
+
+    return [map { $_->value } @{$self->_data}];
 }
 
 sub to_string {

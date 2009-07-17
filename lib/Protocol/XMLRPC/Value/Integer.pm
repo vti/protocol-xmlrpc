@@ -1,12 +1,18 @@
 package Protocol::XMLRPC::Value::Integer;
 use Any::Moose;
 
+extends 'Protocol::XMLRPC::Value';
+
+has alias => (
+    isa     => 'Str',
+    is      => 'rw',
+    default => 'i4'
+);
+
 has value => (
     isa => 'Int',
     is  => 'rw'
 );
-
-use overload '""' => sub { shift->to_string }, fallback => 1;
 
 sub to_string {
     my $self = shift;
@@ -15,7 +21,8 @@ sub to_string {
 
     $value = int($value);
 
-    return "<i4>$value</i4>";
+    my $alias = $self->alias;
+    return "<$alias>$value</$alias>";
 }
 
 1;
