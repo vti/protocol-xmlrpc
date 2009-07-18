@@ -23,10 +23,12 @@ sub call {
         $method_call->add_param($arg);
     }
 
+    my $headers = {'Content-Type' => 'text/xml'};
+
     $self->http_req_cb->(
-        $self, $url, "$method_call" =>
+        $self, $url, $headers, "$method_call" =>
           sub {
-            my ($self, $status, $body) = @_;
+            my ($self, $status, $headers, $body) = @_;
 
             return $cb->($self) unless $status && $status == 200;
 

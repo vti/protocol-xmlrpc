@@ -3,14 +3,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 use Protocol::XMLRPC;
 use Protocol::XMLRPC::Value::String;
 
 my $xmlrpc = Protocol::XMLRPC->new(
     http_req_cb => sub {
-        my ($self, $url, $body, $cb) = @_;
+        my ($self, $url, $headers, $body, $cb) = @_;
 
         if ($url eq 'empty') {
             is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params></params></methodCall>');
@@ -28,10 +28,12 @@ my $xmlrpc = Protocol::XMLRPC->new(
             is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><struct><member><name>foo</name><value><string>bar</string></value></member></struct></value></param></params></methodCall>');
         }
 
+        is($headers->{'Content-Type'}, 'text/xml');
+
         my $status = 200;
         $body = '';
 
-        $cb->($self, $status, $body);
+        $cb->($self, $status, {}, $body);
     }
 );
 
