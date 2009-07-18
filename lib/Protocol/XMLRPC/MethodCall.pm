@@ -27,6 +27,15 @@ sub add_param {
     push @{$self->_params}, $value;
 }
 
+sub params {
+    my $self = shift;
+
+    my @params = @{$self->_params};
+    return unless @params;
+
+    return map {$_->value} @params;
+}
+
 sub _parse_document {
     my $class = shift;
     my ($doc) = @_;
