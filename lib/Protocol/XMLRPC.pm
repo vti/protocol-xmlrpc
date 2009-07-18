@@ -23,10 +23,18 @@ sub call {
         $method_call->add_param($arg);
     }
 
-    my $headers = {'Content-Type' => 'text/xml'};
+    my $host = $url;
+    $host =~ s|^http(s)?://||;
+    $host =~ s|/.*$||;
+
+    my $headers = {
+        'Content-Type' => 'text/xml',
+        'User-Agent'   => 'Protocol-XMLRPC (Perl)',
+        'Host'         => $host
+    };
 
     $self->http_req_cb->(
-        $self, $url, $headers, "$method_call" =>
+        $self, $url, 'POST', $headers, "$method_call" =>
           sub {
             my ($self, $status, $headers, $body) = @_;
 
@@ -88,17 +96,17 @@ parameter creation at L<Protocol::XMLRPC::ValueFactory>.
 
     my $xmlrpc = Protocol::XMLRPC->new(
         http_req_cb => sub {
-            my ($self, $url, $headers, $body, $cb) = @_;
+            my ($self, $url, $method, $headers, $body, $cb) = @_;
 
             ...
 
             $cb->($self, $status, $headers, $body);
 
-A callback for sending request to the xmlrpc server.  Don't forget that
-User-Agent and Host headers are required by XML-RPC specification. Reqeust
-method must be POST also.
+A callback for sending request to the xmlrpc server. Don't forget that
+User-Agent and Host headers are required by XML-RPC specification, default
+values are provided, but you are advised to change them.
 
-Callback receives these parameters:
+Callback receives parameters:
 
 =head3 C<self>
 
