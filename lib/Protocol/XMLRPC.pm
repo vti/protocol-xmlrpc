@@ -4,7 +4,7 @@ use Any::Moose;
 use Protocol::XMLRPC::MethodCall;
 use Protocol::XMLRPC::MethodResponse;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has http_req_cb => (
     required => 1,
