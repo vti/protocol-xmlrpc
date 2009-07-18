@@ -10,33 +10,28 @@ use Protocol::XMLRPC::Value::String;
 
 my $xmlrpc = Protocol::XMLRPC->new(
     http_req_cb => sub {
-        my ($self, $url, $args, $cb) = @_;
-
-        my $status = 200;
-        my $headers = {};
-
-        my $body = '';
+        my ($self, $url, $body, $cb) = @_;
 
         if ($url eq 'empty') {
-            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params></params></methodCall>');
+            is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params></params></methodCall>');
         }
         elsif ($url eq 'single') {
-            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><i4>1</i4></value></param></params></methodCall>');
+            is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><i4>1</i4></value></param></params></methodCall>');
         }
         elsif ($url eq 'object') {
-            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>');
+            is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>');
         }
         elsif ($url eq 'array') {
-            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><array><data><value><string>1</string></value></data></array></value></param></params></methodCall>');
+            is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><array><data><value><string>1</string></value></data></array></value></param></params></methodCall>');
         }
         elsif ($url eq 'struct') {
-            is($args->{body}, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><struct><member><name>foo</name><value><string>bar</string></value></member></struct></value></param></params></methodCall>');
+            is($body, '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><struct><member><name>foo</name><value><string>bar</string></value></member></struct></value></param></params></methodCall>');
         }
 
-        $cb->(
-            $self, $url,
-            {status => $status, headers => $headers, body => $body}
-        );
+        my $status = 200;
+        $body = '';
+
+        $cb->($self, $status, $body);
     }
 );
 

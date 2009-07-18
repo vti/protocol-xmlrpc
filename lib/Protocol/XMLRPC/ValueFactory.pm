@@ -36,7 +36,8 @@ sub build {
     }
     elsif ($value eq 'true' || $value eq 'false') {
         return Protocol::XMLRPC::Value::Boolean->new($value);
-    } elsif ($value =~ m/^(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)$/) {
+    }
+    elsif ($value =~ m/^(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)$/) {
         return Protocol::XMLRPC::Value::DateTime->parse($value);
     }
 
@@ -44,3 +45,44 @@ sub build {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Protocol::XMLRPC::ValueFactory - value objects factory
+
+=head1 SYNOPSIS
+
+    my $array    = Protocol::XMLRPC::ValueFactory->build([...]);
+    my $struct   = Protocol::XMLRPC::ValueFactory->build({...});
+    my $integer  = Protocol::XMLRPC::ValueFactory->build(1);
+    my $double   = Protocol::XMLRPC::ValueFactory->build(1.2);
+    my $datetime = Protocol::XMLRPC::ValueFactory->build('19980717T14:08:55');
+    my $boolean  = Protocol::XMLRPC::ValueFactory->build('true');
+    my $string   = Protocol::XMLRPC::ValueFactory->build('foo');
+
+=head1 DESCRIPTION
+
+This is a value object factory. Used internally. In synopsis you can see what
+types can be guessed.
+
+=head1 ATTRIBUTES
+
+=head1 METHODS
+
+=head2 C<build>
+
+Builds new value object. If no instance was provided tries to guess type.
+
+=head1 AUTHOR
+
+Viacheslav Tikhanovskii, C<vti@cpan.org>.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009, Viacheslav Tikhanovskii.
+
+This program is free software, you can redistribute it and/or modify it under
+the same terms as Perl 5.10.
+
+=cut

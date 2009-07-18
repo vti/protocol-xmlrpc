@@ -13,9 +13,10 @@ WriteMakefile(
         : ()),
     PL_FILES  => {},
     PREREQ_PM => {
-        'Test::More'    => 0,
-        'Any::Moose'    => 0,
-        'XML::LibXML'   => 0
+        'Test::More'   => 0,
+        'Any::Moose'   => 0,
+        'XML::LibXML'  => 0,
+        'MIME::Base64' => 0
     },
     dist  => {COMPRESS => 'gzip -9f', SUFFIX => 'gz'},
     clean => {FILES    => 'Protocol-XMLRPC-*'}

@@ -45,6 +45,12 @@ sub add_member {
       ($key => Protocol::XMLRPC::ValueFactory->build($value));
 }
 
+sub members {
+    my $self = shift;
+
+    return {@{$self->_members}};
+}
+
 sub value {
     my $self = shift;
 
@@ -77,3 +83,81 @@ sub to_string {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Protocol::XMLRPC::Value::Struct - XML-RPC struct
+
+=head1 SYNOPSIS
+
+    my $struct = Protocol::XMLRPC::Value::Struct->new(foo => 'bar');
+    my $struct = Protocol::XMLRPC::Value::Struct->new({foo => 'bar'});
+    my $struct =
+      Protocol::XMLRPC::Value::Struct->new(
+        foo => Protocol::XMLRPC::Value::String->new('bar'));
+
+=head1 DESCRIPTION
+
+XML-RPC struct
+
+=head1 METHODS
+
+=head2 C<new>
+
+Creates new L<Protocol::XMLRPC::Value::Struct> instance. Elements can be provided
+as a hash or as a hash reference.
+
+=head2 C<type>
+
+Returns 'struct'.
+
+=head2 C<add_member>
+
+    $struct->add_member(foo => 'bar');
+    $struct->add_member({foo => 'bar'});
+    $struct->add_member(foo => Protocol::XMLRPC::Value::String->new('bar'));
+
+Adds value to the struct. Can be Perl5 scalar or any Protocol::XMLRCP::Value::*
+instance, including another struct.
+
+=head2 C<members>
+
+    my $struct = Protocol::XMLRPC::Value::Struct->new(foo => 'bar');
+    my $members = $struct->members;
+
+Returns hash reference where values are objects.
+
+=head2 C<value>
+
+    my $struct = Protocol::XMLRPC::Value::Struct->new(foo => 'bar');
+    my $structref = $struct->value;
+    # $structref is now {foo => 'bar'}
+
+Returns serialized Perl5 hash reference.
+
+=head2 C<to_string>
+
+    my $struct = Protocol::XMLRPC::Value::Struct->new(foo => 'bar');
+    my $string = $struct->to_string;
+    # <struct>
+    #   <member>
+    #     <name>foo</name>
+    #     <value><string>bar</string></value>
+    #   </member>
+    # </struct>'
+
+XML-RPC struct string representation.
+
+=head1 AUTHOR
+
+Viacheslav Tikhanovskii, C<vti@cpan.org>.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009, Viacheslav Tikhanovskii.
+
+This program is free software, you can redistribute it and/or modify it under
+the same terms as Perl 5.10.
+
+=cut

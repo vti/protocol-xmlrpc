@@ -11,7 +11,7 @@ has name => (
     is       => 'rw',
 );
 
-has _params => (
+has params => (
     isa     => 'ArrayRef',
     is      => 'rw',
     default => sub { [] }
@@ -24,13 +24,7 @@ sub add_param {
     my $value = Protocol::XMLRPC::ValueFactory->build($param);
     return unless $value;
 
-    push @{$self->_params}, $value;
-}
-
-sub params {
-    my $self = shift;
-
-    return @{$self->_params};
+    push @{$self->params}, $value;
 }
 
 sub _parse_document {
@@ -51,7 +45,7 @@ sub _parse_document {
             my ($value) = $param->getElementsByTagName('value');
 
             if (my $param = $self->_parse_value($value)) {
-                push @{$self->_params}, $param;
+                push @{$self->params}, $param;
             }
             else {
                 return;
@@ -71,7 +65,7 @@ sub to_string {
 
     $string .= '<params>';
 
-    foreach my $params (@{$self->_params}) {
+    foreach my $params (@{$self->params}) {
         $string .= '<param><value>' . $params->to_string . "</value></param>";
     }
 
@@ -83,3 +77,78 @@ sub to_string {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Protocol::XMLRPC::MethodCall - XML-RPC methodCall request
+
+=head1 SYNOPSIS
+
+    my $method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
+    $method_call->add_param(1);
+
+    $method_call = Protocol::XMLRPC::MethodCall->parse(...);
+
+=head1 DESCRIPTION
+
+XML-RPC methodCall request object.
+
+=head1 ATTRIBUTES
+
+=head2 C<params>
+
+Holds method call name.
+
+=head2 C<params>
+
+Holds array reference of all passed params as objects.
+
+=head1 METHODS
+
+=head2 C<new>
+
+Creates a new L<Protocol::XMLRPC::MethodCall> instance. Name is required.
+
+=head2 C<parse>
+
+    my $method_call = Protocol::XMLRPC::MethodCall->parse('<?xml ...');
+
+Creates a new L<Protocol::XMLRPC::MethodCall> from xml.
+
+=head2 C<add_param>
+
+    $method_call->add_param(1);
+    $method_call->add_param(Protocol::XMLRPC::Value::String->new('foo'));
+
+Adds param. Tries to guess a type if a Perl5 scalar/arrayref/hashref was passed
+instead of an object.
+
+=head2 C<to_string>
+
+    my $method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
+    $method_call->add_param('baz');
+    # <?xml version="1.0"?>
+    # <methodCall>
+    #    <methodName>foo.bar</methodName>
+    #    <params>
+    #       <param>
+    #          <value><string>baz</string></value>
+    #       </param>
+    #    </params>
+    # </methodCall>
+
+L<Protocol::XMLRPC::MethodCall> string representation.
+
+=head1 AUTHOR
+
+Viacheslav Tikhanovskii, C<vti@cpan.org>.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009, Viacheslav Tikhanovskii.
+
+This program is free software, you can redistribute it and/or modify it under
+the same terms as Perl 5.10.
+
+=cut

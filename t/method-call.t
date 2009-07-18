@@ -23,6 +23,5 @@ $method_call = Protocol::XMLRPC::MethodCall->parse(qq|<?xml version="1.0"?><meth
 ok($method_call);
 is($method_call->name, 'foo.bar');
 
-is($method_call->params, 1);
-my @params = $method_call->params;
-is($params[0]->value, 'foo');
+is(@{$method_call->params}, 1);
+is($method_call->params->[0]->value, 'foo');
