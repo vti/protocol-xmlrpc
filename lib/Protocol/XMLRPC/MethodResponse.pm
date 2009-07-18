@@ -53,10 +53,7 @@ sub param {
         $self->_param(Protocol::XMLRPC::ValueFactory->build(@_));
     }
     else {
-        my $param = $self->_param;
-        return unless $param;
-
-        return $param->value;
+        return $self->_param;
     }
 }
 

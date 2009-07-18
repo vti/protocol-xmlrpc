@@ -30,10 +30,7 @@ sub add_param {
 sub params {
     my $self = shift;
 
-    my @params = @{$self->_params};
-    return unless @params;
-
-    return map {$_->value} @params;
+    return @{$self->_params};
 }
 
 sub _parse_document {

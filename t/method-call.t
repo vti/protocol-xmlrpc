@@ -25,4 +25,4 @@ is($method_call->name, 'foo.bar');
 
 is($method_call->params, 1);
 my @params = $method_call->params;
-is($params[0], 'foo');
+is($params[0]->value, 'foo');
