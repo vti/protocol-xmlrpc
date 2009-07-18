@@ -1,6 +1,8 @@
 package Protocol::XMLRPC::Value::Array;
 use Any::Moose;
 
+use Protocol::XMLRPC::ValueFactory;
+
 has _data => (
     isa     => 'ArrayRef',
     is      => 'rw',
@@ -32,7 +34,10 @@ sub new {
 
 sub add_data {
     my $self = shift;
-    my ($value) = @_;
+    my ($param) = @_;
+
+    my $value = Protocol::XMLRPC::ValueFactory->build($param);
+    return unless $value;
 
     push @{$self->_data}, $value;
 }

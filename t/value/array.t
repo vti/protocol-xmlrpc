@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 use Protocol::XMLRPC::Value::Array;
 use Protocol::XMLRPC::Value::String;
@@ -40,3 +40,10 @@ is($value->to_string,
     '<array><data><value><i4>123</i4></value><value><string>foo</string></value></data></array>'
 );
 is_deeply($value->value, [123, 'foo']);
+
+$value = Protocol::XMLRPC::Value::Array->new;
+$value->add_data(1);
+is($value->to_string,
+    '<array><data><value><i4>1</i4></value></data></array>'
+);
+is_deeply($value->value, [1]);
