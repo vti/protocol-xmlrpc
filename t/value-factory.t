@@ -3,13 +3,19 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 use Protocol::XMLRPC::ValueFactory;
 
 my $value;
 
 $value = Protocol::XMLRPC::ValueFactory->build();
+ok(not defined $value);
+
+$value = Protocol::XMLRPC::ValueFactory->build([]);
+ok(not defined $value);
+
+$value = Protocol::XMLRPC::ValueFactory->build({});
 ok(not defined $value);
 
 $value = Protocol::XMLRPC::ValueFactory->build(-1);

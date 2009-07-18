@@ -18,9 +18,11 @@ sub build {
     return unless defined $value;
 
     if (ref($value) eq 'ARRAY') {
+        return unless @$value;
         return Protocol::XMLRPC::Value::Array->new($value);
     }
     elsif (ref($value) eq 'HASH') {
+        return unless %$value;
         return Protocol::XMLRPC::Value::Struct->new($value);
     }
     elsif (ref($value)) {

@@ -21,7 +21,10 @@ sub add_param {
     my $self = shift;
     my $param = shift;
 
-    push @{$self->_params}, Protocol::XMLRPC::ValueFactory->build($param);
+    my $value = Protocol::XMLRPC::ValueFactory->build($param);
+    return unless $value;
+
+    push @{$self->_params}, $value;
 }
 
 sub _parse_document {
