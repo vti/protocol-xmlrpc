@@ -47,25 +47,25 @@ $xmlrpc->call(
 );
 
 $xmlrpc->call(
-    'single' => 'foo.bar' => 1 => sub {
+    'single' => 'foo.bar' => [1] => sub {
         my ($self, $method_response) = @_;
     }
 );
 
 $xmlrpc->call(
-    'object' => 'foo.bar' => Protocol::XMLRPC::Value::String->new(1) => sub {
+    'object' => 'foo.bar' => [Protocol::XMLRPC::Value::String->new(1)] => sub {
         my ($self, $method_response) = @_;
     }
 );
 
 $xmlrpc->call(
-    'array' => 'foo.bar' => [Protocol::XMLRPC::Value::String->new(1)] => sub {
+    'array' => 'foo.bar' => [[Protocol::XMLRPC::Value::String->new(1)]] => sub {
         my ($self, $method_response) = @_;
     }
 );
 
 $xmlrpc->call(
-    'struct' => 'foo.bar' => {foo => 'bar'} => sub {
+    'struct' => 'foo.bar' => [{foo => 'bar'}] => sub {
         my ($self, $method_response) = @_;
     }
 );

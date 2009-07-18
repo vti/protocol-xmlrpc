@@ -30,13 +30,15 @@ sub call {
     my $self = shift;
     my ($url, $method_name, $args, $cb) = @_;
 
-    ($cb, $args) = ($args, undef) unless $cb;
+    ($cb, $args) = ($args, []) unless $cb;
 
     my $headers =
       {'User-Agent' => $self->user_agent, 'Content-Type' => 'text/xml'};
 
     my $method_call = Protocol::XMLRPC::MethodCall->new(name => $method_name);
-    $method_call->add_param($args) if $args;
+    foreach my $arg (@$args) {
+        $method_call->add_param($arg);
+    }
 
     $self->http_req_cb->(
         $self, $url,
