@@ -3,6 +3,8 @@ use Any::Moose;
 
 extends 'Protocol::XMLRPC::Value';
 
+sub type {'boolean'}
+
 sub to_string {
     my $self = shift;
 

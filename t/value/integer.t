@@ -3,18 +3,22 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 6;
 
-use Protocol::XMLRPC::Value::Integer;
+my $class = 'Protocol::XMLRPC::Value::Integer';
 
-my $value = Protocol::XMLRPC::Value::Integer->new('12');
+use_ok($class);
+
+is($class->type, 'integer');
+
+my $value = $class->new('12');
 is($value->to_string, '<i4>12</i4>');
 
-$value = Protocol::XMLRPC::Value::Integer->new('12', alias => 'int');
+$value = $class->new('12', alias => 'int');
 is($value->to_string, '<int>12</int>');
 
-$value = Protocol::XMLRPC::Value::Integer->new('-12');
+$value = $class->new('-12');
 is($value->to_string, '<i4>-12</i4>');
 
-$value = Protocol::XMLRPC::Value::Integer->new('-00012');
+$value = $class->new('-00012');
 is($value->to_string, '<i4>-12</i4>');

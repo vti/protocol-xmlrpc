@@ -5,6 +5,8 @@ extends 'Protocol::XMLRPC::Value';
 
 require MIME::Base64;
 
+sub type {'base64'}
+
 sub to_string {
     my $self = shift;
 

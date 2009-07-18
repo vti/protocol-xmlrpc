@@ -3,18 +3,22 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 6;
 
-use Protocol::XMLRPC::Value::Boolean;
+my $class = 'Protocol::XMLRPC::Value::Boolean';
 
-my $value = Protocol::XMLRPC::Value::Boolean->new('0');
+use_ok($class);
+
+is($class->type, 'boolean');
+
+my $value = $class->new('0');
 is($value->to_string, '<boolean>0</boolean>');
 
-$value = Protocol::XMLRPC::Value::Boolean->new('false');
+$value = $class->new('false');
 is($value->to_string, '<boolean>false</boolean>');
 
-$value = Protocol::XMLRPC::Value::Boolean->new('1');
+$value = $class->new('1');
 is($value->to_string, '<boolean>1</boolean>');
 
-$value = Protocol::XMLRPC::Value::Boolean->new('true');
+$value = $class->new('true');
 is($value->to_string, '<boolean>true</boolean>');

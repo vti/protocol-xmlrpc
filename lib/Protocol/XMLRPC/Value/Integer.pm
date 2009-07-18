@@ -14,6 +14,8 @@ has value => (
     is  => 'rw'
 );
 
+sub type {'integer'}
+
 sub to_string {
     my $self = shift;
 

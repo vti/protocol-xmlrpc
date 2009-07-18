@@ -11,6 +11,8 @@ has _data => (
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
+sub type {'array'}
+
 sub new {
     my $class = shift;
 

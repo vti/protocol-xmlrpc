@@ -3,9 +3,13 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 3;
 
-use Protocol::XMLRPC::Value::Base64;
+my $class = 'Protocol::XMLRPC::Value::Base64';
 
-my $value = Protocol::XMLRPC::Value::Base64->new('foo');
+use_ok($class);
+
+is($class->type, 'base64');
+
+my $value = $class->new('foo');
 is($value->to_string, "<base64>Zm9v\n</base64>");

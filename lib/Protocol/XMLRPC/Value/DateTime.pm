@@ -10,6 +10,8 @@ has value => (
 
 require Time::Local;
 
+sub type {'datetime'}
+
 sub parse {
     my $class = shift;
     my ($datetime) = @_;

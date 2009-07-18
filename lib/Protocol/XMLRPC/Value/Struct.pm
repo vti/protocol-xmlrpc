@@ -11,6 +11,8 @@ has _members => (
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
+sub type {'struct'}
+
 sub new {
     my $class = shift;
 

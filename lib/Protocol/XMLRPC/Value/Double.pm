@@ -8,6 +8,8 @@ has value => (
     is  => 'rw'
 );
 
+sub type {'double'}
+
 sub to_string {
     my $self = shift;
 
