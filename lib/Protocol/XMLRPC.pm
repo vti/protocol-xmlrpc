@@ -4,7 +4,7 @@ use Any::Moose;
 use Protocol::XMLRPC::MethodCall;
 use Protocol::XMLRPC::MethodResponse;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 has http_req_cb => (
     required => 1,
@@ -109,6 +109,8 @@ values are provided, but you are advised to change them.
 
 Request callback is called with:
 
+=over
+
 =item * B<self> L<Protocol::XMLRPC> instance
 
 =item * B<url> server url (for example 'http://example.com/xmlrpc')
@@ -122,7 +124,11 @@ string representation.
 
 =item * B<cb> callback that must be called after response was received
 
+=back
+
 Response callback must be called with:
+
+=over
 
 =item * B<self> L<Protocol::XMLRPC> instance
 
@@ -132,8 +138,9 @@ Response callback must be called with:
 
 =item * B<body> response body
 
-Must be
-provided with L<Protocol::XMLRPC> instance, response status and body.
+=back
+
+Must be provided with L<Protocol::XMLRPC> instance, response status and body.
 
 =head1 METHODS
 
