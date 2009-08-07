@@ -4,7 +4,7 @@ use Any::Moose;
 use Protocol::XMLRPC::MethodCall;
 use Protocol::XMLRPC::MethodResponse;
 
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 
 has http_req_cb => (
     required => 1,
@@ -140,8 +140,6 @@ Response callback must be called with:
 
 =back
 
-Must be provided with L<Protocol::XMLRPC> instance, response status and body.
-
 =head1 METHODS
 
 =head2 C<new>
@@ -186,11 +184,11 @@ pass 1 as a string, you can pass value instance instead of a value.
 
 =head1 AUTHOR
 
-Viacheslav Tikhanovskii, C<vti@cpan.org>.
+Viacheslav Tykhanovskyi, C<vti@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009, Viacheslav Tikhanovskii.
+Copyright (C) 2009, Viacheslav Tykhanovskyi.
 
 This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl 5.10.
