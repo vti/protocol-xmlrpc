@@ -23,7 +23,7 @@ $dispatcher->dispatch(
     'foo' => sub {
         my $res = shift;
 
-        is($res->param->value, 'Method call is corrupted');
+        is($res->fault_string, 'Method call is corrupted');
     }
 );
 
@@ -32,7 +32,7 @@ $dispatcher->dispatch(
     "$req" => sub {
         my $res = shift;
 
-        is($res->param->value, 'Unknown method');
+        is($res->fault_string, 'Unknown method');
     }
 );
 
@@ -42,7 +42,7 @@ $dispatcher->dispatch(
     "$req" => sub {
         my $res = shift;
 
-        is($res->param->value, 'Wrong prototype');
+        is($res->fault_string, 'Wrong prototype');
     }
 );
 
@@ -53,7 +53,7 @@ $dispatcher->dispatch(
     "$req" => sub {
         my $res = shift;
 
-        is($res->param->value, 'Wrong prototype');
+        is($res->fault_string, 'Wrong prototype');
     }
 );
 

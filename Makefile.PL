@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME          => 'Protocol::XMLRPC',
-    AUTHOR        => 'Viacheslav Tikhanovskii <vti@cpan.org>',
+    AUTHOR        => 'Viacheslav Tykhanovskyi <vti@cpan.org>',
     VERSION_FROM  => 'lib/Protocol/XMLRPC.pm',
     ABSTRACT_FROM => 'lib/Protocol/XMLRPC.pm',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002
@@ -14,7 +14,6 @@ WriteMakefile(
     PL_FILES  => {},
     PREREQ_PM => {
         'Test::More'   => 0,
-        'Any::Moose'   => 0,
         'XML::LibXML'  => 0,
         'MIME::Base64' => 0
     },

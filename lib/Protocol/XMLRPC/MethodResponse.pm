@@ -1,18 +1,11 @@
 package Protocol::XMLRPC::MethodResponse;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Method';
+use strict;
+use warnings;
+
+use base 'Protocol::XMLRPC::Method';
 
 use Protocol::XMLRPC::ValueFactory;
-
-has _param => (
-    is      => 'rw'
-);
-
-has _fault => (
-    isa     => 'Protocol::XMLRPC::Value::Struct',
-    is      => 'rw'
-);
 
 sub new {
     my $class = shift;
@@ -46,43 +39,41 @@ sub fault {
     if (@_) {
         my ($code, $string) = @_;
 
-        $self->_fault(
-            Protocol::XMLRPC::Value::Struct->new(
-                faultCode   => $code,
-                faultString => $string
-            )
+        $self->{_fault} = Protocol::XMLRPC::Value::Struct->new(
+            faultCode   => $code,
+            faultString => $string
         );
 
         return $self;
     }
 
-    return $self->_fault;
+    return $self->{_fault};
 }
 
 sub fault_string {
     my $self = shift;
 
-    return unless $self->_fault;
+    return unless $self->{_fault};
 
-    return $self->_fault->members->{faultString}->value;
+    return $self->{_fault}->members->{faultString}->value;
 }
 
 sub fault_code {
     my $self = shift;
 
-    return unless $self->_fault;
+    return unless $self->{_fault};
 
-    return $self->_fault->members->{faultCode}->value;
+    return $self->{_fault}->members->{faultCode}->value;
 }
 
 sub param {
     my $self = shift;
 
     if (@_) {
-        $self->_param(Protocol::XMLRPC::ValueFactory->build(@_));
+        $self->{_param} = Protocol::XMLRPC::ValueFactory->build(@_);
     }
     else {
-        return $self->_param;
+        return $self->{_param};
     }
 }
 
@@ -125,13 +116,13 @@ sub to_string {
     if (defined $self->fault) {
         $string .= '<fault>';
 
-        my $struct = $self->_fault;
+        my $struct = $self->fault;
 
         $string .= "<value>$struct</value>";
 
         $string .= '</fault>';
     }
-    elsif (my $param = $self->_param) {
+    elsif (my $param = $self->param) {
         $string .= '<params>';
 
         $string .= "<param><value>$param</value></param>";

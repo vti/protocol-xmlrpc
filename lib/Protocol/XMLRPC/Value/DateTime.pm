@@ -1,12 +1,9 @@
 package Protocol::XMLRPC::Value::DateTime;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Value';
+use strict;
+use warnings;
 
-has value => (
-    isa => 'Int',
-    is  => 'rw'
-);
+use base 'Protocol::XMLRPC::Value';
 
 require Time::Local;
 

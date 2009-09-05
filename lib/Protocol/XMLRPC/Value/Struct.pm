@@ -1,13 +1,9 @@
 package Protocol::XMLRPC::Value::Struct;
-use Any::Moose;
+
+use strict;
+use warnings;
 
 use Protocol::XMLRPC::ValueFactory;
-
-has _members => (
-    isa     => 'ArrayRef',
-    is      => 'rw',
-    default => sub { [] }
-);
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
@@ -25,7 +21,10 @@ sub new {
         @values = @_;
     }
 
-    my $self = $class->SUPER::new;
+    my $self = {};
+    bless $self, $class;
+
+    $self->{_members} = [];
 
     for (my $i = 0; $i < @values; $i += 2) {
         my $name  = $values[$i];
@@ -41,23 +40,23 @@ sub add_member {
     my $self = shift;
     my ($key, $value) = @_;
 
-    push @{$self->_members},
+    push @{$self->{_members}},
       ($key => Protocol::XMLRPC::ValueFactory->build($value));
 }
 
 sub members {
     my $self = shift;
 
-    return {@{$self->_members}};
+    return {@{$self->{_members}}};
 }
 
 sub value {
     my $self = shift;
 
     my $hash = {};
-    for (my $i = 0; $i < @{$self->_members}; $i += 2) {
-        my $name = $self->_members->[$i];
-        my $value = $self->_members->[$i + 1]->value;
+    for (my $i = 0; $i < @{$self->{_members}}; $i += 2) {
+        my $name = $self->{_members}->[$i];
+        my $value = $self->{_members}->[$i + 1]->value;
 
         $hash->{$name} = $value;
     }
@@ -70,9 +69,9 @@ sub to_string {
 
     my $string = '<struct>';
 
-    for (my $i = 0; $i < @{$self->_members}; $i += 2) {
-        my $name = $self->_members->[$i];
-        my $value = $self->_members->[$i + 1]->to_string;
+    for (my $i = 0; $i < @{$self->{_members}}; $i += 2) {
+        my $name = $self->{_members}->[$i];
+        my $value = $self->{_members}->[$i + 1]->to_string;
 
         $string .= "<member><name>$name</name><value>$value</value></member>";
     }

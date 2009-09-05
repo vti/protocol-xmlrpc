@@ -1,30 +1,26 @@
 package Protocol::XMLRPC::Value;
-use Any::Moose;
 
-has value => (
-    isa => 'Str',
-    is  => 'rw'
-);
+use strict;
+use warnings;
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
 sub new {
     my $class = shift;
 
-    my $value;
+    my $value; $value = shift if @_ % 2;
 
-    $value = shift if @_ % 2;
-
-    my $self = $class->SUPER::new(@_);
+    my $self = {@_};
+    bless $self, $class;
 
     $self->value($value) if defined $value;
 
     return $self;
 }
 
-sub to_string {
-    return '';
-}
+sub value { defined $_[1] ? $_[0]->{value} = $_[1] : $_[0]->{value} }
+
+sub to_string { '' }
 
 1;
 __END__
@@ -36,9 +32,11 @@ Protocol::XMLRPC::Value - a base class for scalar values
 =head1 SYNOPSIS
 
     package Protocol::XMLRPC::Value::Boolean;
-    use Any::Moose;
 
-    extends 'Protocol::XMLRPC::Value';
+    use strict;
+    use warnings;
+
+    use base 'Protocol::XMLRPC::Value';
 
     ...
 

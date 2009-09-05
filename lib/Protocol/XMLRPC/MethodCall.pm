@@ -1,21 +1,25 @@
 package Protocol::XMLRPC::MethodCall;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Method';
+use strict;
+use warnings;
+
+use base 'Protocol::XMLRPC::Method';
 
 use Protocol::XMLRPC::ValueFactory;
+require Carp;
 
-has name => (
-    required => 1,
-    isa      => 'Str',
-    is       => 'rw',
-);
+sub new {
+    my $self = shift->SUPER::new(@_);
 
-has params => (
-    isa     => 'ArrayRef',
-    is      => 'rw',
-    default => sub { [] }
-);
+    $self->{params} ||= [];
+
+    Carp::croak('name is required') unless $self->name;
+
+    return $self;
+}
+
+sub name   { defined $_[1] ? $_[0]->{name}   = $_[1] : $_[0]->{name} }
+sub params { defined $_[1] ? $_[0]->{params} = $_[1] : $_[0]->{params} }
 
 sub add_param {
     my $self = shift;

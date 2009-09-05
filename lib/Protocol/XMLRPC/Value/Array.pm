@@ -1,17 +1,11 @@
 package Protocol::XMLRPC::Value::Array;
-use Any::Moose;
+
+use strict;
+use warnings;
 
 use Protocol::XMLRPC::ValueFactory;
 
-has data => (
-    isa     => 'ArrayRef',
-    is      => 'rw',
-    default => sub { [] }
-);
-
 use overload '""' => sub { shift->to_string }, fallback => 1;
-
-sub type {'array'}
 
 sub new {
     my $class = shift;
@@ -25,7 +19,10 @@ sub new {
         @values = @_;
     }
 
-    my $self = $class->SUPER::new;
+    my $self = {};
+    bless $self, $class;
+
+    $self->{data} ||= [];
 
     foreach my $value (@values) {
         $self->add_data($value);
@@ -33,6 +30,10 @@ sub new {
 
     return $self;
 }
+
+sub type {'array'}
+
+sub data { defined $_[1] ? $_[0]->{data} = $_[1] : $_[0]->{data} }
 
 sub add_data {
     my $self = shift;

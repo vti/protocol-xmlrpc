@@ -1,7 +1,9 @@
 package Protocol::XMLRPC::Value::Base64;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Value';
+use strict;
+use warnings;
+
+use base 'Protocol::XMLRPC::Value';
 
 require MIME::Base64;
 

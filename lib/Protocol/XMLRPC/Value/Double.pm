@@ -1,12 +1,9 @@
 package Protocol::XMLRPC::Value::Double;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Value';
+use strict;
+use warnings;
 
-has value => (
-    isa => 'Num',
-    is  => 'rw'
-);
+use base 'Protocol::XMLRPC::Value';
 
 sub type {'double'}
 

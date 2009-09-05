@@ -1,5 +1,7 @@
 package Protocol::XMLRPC::Method;
-use Any::Moose;
+
+use strict;
+use warnings;
 
 use Protocol::XMLRPC::Value::Double;
 use Protocol::XMLRPC::Value::String;
@@ -13,6 +15,15 @@ use Protocol::XMLRPC::Value::Base64;
 use XML::LibXML;
 
 use overload '""' => sub { shift->to_string }, fallback => 1;
+
+sub new {
+    my $class = shift;
+
+    my $self = {@_};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub parse {
     my $class = shift;
@@ -127,9 +138,11 @@ Protocol::XMLRPC::Method - methodCall and methodResponse base class
 =head1 SYNOPSIS
 
     package Protocol::XMLRPC::MethodCall;
-    use Any::Moose;
 
-    extends 'Protocol::XMLRPC::Method';
+    use warnings;
+    use strict;
+
+    use base 'Protocol::XMLRPC::Method';
 
     ...
 

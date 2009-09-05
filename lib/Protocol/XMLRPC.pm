@@ -1,16 +1,29 @@
 package Protocol::XMLRPC;
-use Any::Moose;
+
+use strict;
+use warnings;
 
 use Protocol::XMLRPC::MethodCall;
 use Protocol::XMLRPC::MethodResponse;
 
+require Carp;
+
 our $VERSION = '0.05';
 
-has http_req_cb => (
-    required => 1,
-    isa      => 'CodeRef',
-    is       => 'rw',
-);
+sub new {
+    my $class = shift;
+
+    my $self = {@_};
+    bless $self, $class;
+
+    Carp::croak('http_req_cb is required') unless $self->{http_req_cb};
+
+    return $self;
+}
+
+sub http_req_cb {
+    defined $_[1] ? $_[0]->{http_req_cb} = $_[1] : $_[0]->{http_req_cb};
+}
 
 sub call {
     my $self = shift;

@@ -1,18 +1,19 @@
 package Protocol::XMLRPC::Value::Integer;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Value';
+use strict;
+use warnings;
 
-has alias => (
-    isa     => 'Str',
-    is      => 'rw',
-    default => 'i4'
-);
+use base 'Protocol::XMLRPC::Value';
 
-has value => (
-    isa => 'Int',
-    is  => 'rw'
-);
+sub new {
+    my $self = shift->SUPER::new(@_);
+
+    $self->{alias} ||= 'i4';
+
+    return $self;
+}
+
+sub alias { defined $_[1] ? $_[0]->{alias} = $_[1] : $_[0]->{alias} }
 
 sub type {'integer'}
 

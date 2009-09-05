@@ -1,7 +1,9 @@
 package Protocol::XMLRPC::Value::String;
-use Any::Moose;
 
-extends 'Protocol::XMLRPC::Value';
+use strict;
+use warnings;
+
+use base 'Protocol::XMLRPC::Value';
 
 sub type {'string'}
 
