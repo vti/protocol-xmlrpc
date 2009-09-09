@@ -13,29 +13,36 @@ use Protocol::XMLRPC::Value::Struct;
 
 sub build {
     my $class = shift;
-    my ($value) = @_;
 
-    return unless defined $value;
+    return unless @_;
 
-    if (ref($value) eq 'ARRAY') {
+    my ($type, $value) = @_;
+    ($value, $type) = ($type, '') unless defined $value;
+
+    if (($type && $type eq 'array') || ref($value) eq 'ARRAY') {
         return Protocol::XMLRPC::Value::Array->new($value);
     }
-    elsif (ref($value) eq 'HASH') {
+    elsif (($type && $type eq 'struct') || ref($value) eq 'HASH') {
         return Protocol::XMLRPC::Value::Struct->new($value);
     }
     elsif (ref($value)) {
         return $value;
     }
-    elsif ($value =~ m/^(?:\+|-)?\d+$/) {
+    elsif (($type && $type eq 'int') || $value =~ m/^(?:\+|-)?\d+$/) {
         return Protocol::XMLRPC::Value::Integer->new($value);
     }
-    elsif ($value =~ m/^(?:\+|-)?\d+\.\d+$/) {
+    elsif (($type && $type eq 'double') || $value =~ m/^(?:\+|-)?\d+\.\d+$/) {
         return Protocol::XMLRPC::Value::Double->new($value);
     }
-    elsif ($value eq 'true' || $value eq 'false') {
+    elsif (($type && $type eq 'boolean')
+        || $value eq 'true'
+        || $value eq 'false')
+    {
         return Protocol::XMLRPC::Value::Boolean->new($value);
     }
-    elsif ($value =~ m/^(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)$/) {
+    elsif (($type && $type eq 'datetime')
+        || $value =~ m/^(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)$/)
+    {
         return Protocol::XMLRPC::Value::DateTime->parse($value);
     }
 

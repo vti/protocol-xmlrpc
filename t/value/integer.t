@@ -9,7 +9,7 @@ my $class = 'Protocol::XMLRPC::Value::Integer';
 
 use_ok($class);
 
-is($class->type, 'integer');
+is($class->type, 'int');
 
 my $value = $class->new('12');
 is($value->to_string, '<i4>12</i4>');

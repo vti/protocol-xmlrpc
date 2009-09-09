@@ -15,7 +15,7 @@ sub new {
 
 sub alias { defined $_[1] ? $_[0]->{alias} = $_[1] : $_[0]->{alias} }
 
-sub type {'integer'}
+sub type {'int'}
 
 sub to_string {
     my $self = shift;

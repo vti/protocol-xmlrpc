@@ -5,6 +5,7 @@ use warnings;
 
 use Protocol::XMLRPC::MethodResponse;
 use Protocol::XMLRPC::MethodCall;
+use Protocol::XMLRPC::ValueFactory;
 
 sub new {
     my $class = shift;
@@ -16,6 +17,55 @@ sub new {
     $self->{message_corrupted}       ||= 'Method call is corrupted';
     $self->{message_unknown_method}  ||= 'Unknown method';
     $self->{message_wrong_prototype} ||= 'Wrong prototype';
+
+    $self->{methods}->{'system.getCapabilities'} = {
+        ret => 'struct',
+        args    => [],
+        handler => sub {
+            return {
+                name => 'introspect',
+                specUrl =>
+                  'http://xmlrpc-c.sourceforge.net/xmlrpc-c/introspection.html',
+                specVersion => 1
+            };
+          }
+    };
+
+    $self->{methods}->{'system.listMethods'} = {
+        ret => 'array',
+        args    => [],
+        handler => sub {
+            return [sort keys %{$self->{methods}}];
+          }
+    };
+
+    $self->{methods}->{'system.methodSignature'} = {
+        ret => 'array',
+        args    => ['string'],
+        handler => sub {
+            my ($name) = @_;
+
+            if (my $method = $self->{methods}->{$name->value}) {
+                return [$method->{ret}, @{$method->{args}}];
+            }
+
+            die $self->message_unknown_method;
+          }
+    };
+
+    $self->{methods}->{'system.methodHelp'} = {
+        ret => 'string',
+        args    => ['string'],
+        handler => sub {
+            my ($name) = @_;
+
+            if (my $method = $self->{methods}->{$name->value}) {
+                return $method->{descr};
+            }
+
+            die $self->message_unknown_method;
+          }
+    };
 
     return $self;
 }
@@ -52,7 +102,9 @@ sub dispatch {
         return $cb->($method_response);
     }
 
-    my $method = $self->methods->{$method_call->name};
+    my $method_name = $method_call->name;
+
+    my $method = $self->methods->{$method_name};
 
     unless ($method) {
         $method_response->fault(-1 => $self->message_unknown_method);
@@ -61,27 +113,25 @@ sub dispatch {
 
     my $params = $method_call->params;
 
-    if (my $args_count = @{$method->{args}}) {
-        my $prototype =
-          $method_call->name . '(' . join(', ', @{$method->{args}}) . ')';
+    my $args_count = @{$method->{args}};
+    my $prototype =
+      $method_call->name . '(' . join(', ', @{$method->{args}}) . ')';
 
-        unless (@$params == $args_count) {
+    unless (@$params == $args_count) {
+        $method_response->fault(-1 => $self->message_wrong_prototype);
+        return $cb->($method_response);
+    }
+
+    for (my $count = 0; $count < $args_count; $count++) {
+        next if $method->{args}->[$count] eq '*';
+
+        if ($params->[$count]->type ne $method->{args}->[$count]) {
             $method_response->fault(-1 => $self->message_wrong_prototype);
             return $cb->($method_response);
-        }
-
-        for (my $count = 0; $count < $args_count; $count++) {
-            next if $method->{args}->[$count] eq '*';
-
-            if ($params->[$count]->type ne $method->{args}->[$count]) {
-                $method_response->fault(-1 => $self->message_wrong_prototype);
-                return $cb->($method_response);
-            }
         }
     }
 
     my $param;
-    #eval {die};
     eval { $param = $method->{handler}->(@{$method_call->params}) };
 
     if ($@) {
@@ -89,7 +139,13 @@ sub dispatch {
         $method_response->fault(-1 => $error || 'Internal error');
     }
     else {
-        $method_response->param($param);
+        if (my $type = $method->{ret}) {
+            $method_response->param(
+                Protocol::XMLRPC::ValueFactory->build($type => $param));
+        }
+        else {
+            $method_response->param($param);
+        }
     }
 
     return $cb->($method_response);

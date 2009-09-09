@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 11;
 
 use Protocol::XMLRPC::Dispatcher;
 use Protocol::XMLRPC::MethodCall;
@@ -11,7 +11,9 @@ use Protocol::XMLRPC::MethodCall;
 my $dispatcher = Protocol::XMLRPC::Dispatcher->new(
     methods => {
         plus => {
-            args    => [qw/integer integer/],
+            ret     => 'int',
+            args    => [qw/int int/],
+            descr   => 'Adds two integers and returns the result',
             handler => sub { $_[0]->value + $_[1]->value; }
         }
     }
@@ -65,5 +67,45 @@ $dispatcher->dispatch(
         my $res = shift;
 
         is($res->param->value, 3);
+    }
+);
+
+$req = Protocol::XMLRPC::MethodCall->new(name => 'system.getCapabilities');
+$dispatcher->dispatch(
+    "$req" => sub {
+        my $res = shift;
+
+        is($res->param->value->{specVersion}, 1);
+    }
+);
+
+$req = Protocol::XMLRPC::MethodCall->new(name => 'system.listMethods');
+$dispatcher->dispatch(
+    "$req" => sub {
+        my $res = shift;
+
+        is($res->param->data->[0]->value, 'plus');
+    }
+);
+
+$req = Protocol::XMLRPC::MethodCall->new(name => 'system.methodSignature');
+$req->add_param('plus');
+$dispatcher->dispatch(
+    "$req" => sub {
+        my $res = shift;
+
+        is($res->param->data->[0]->value, 'int');
+        is($res->param->data->[1]->value, 'int');
+        is($res->param->data->[2]->value, 'int');
+    }
+);
+
+$req = Protocol::XMLRPC::MethodCall->new(name => 'system.methodHelp');
+$req->add_param('plus');
+$dispatcher->dispatch(
+    "$req" => sub {
+        my $res = shift;
+
+        is($res->param->value, 'Adds two integers and returns the result');
     }
 );
