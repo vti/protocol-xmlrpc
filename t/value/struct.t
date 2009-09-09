@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 use Protocol::XMLRPC::Value::String;
 use Protocol::XMLRPC::Value::Integer;
@@ -15,6 +15,8 @@ use_ok($class);
 is($class->type, 'struct');
 
 my $struct = $class->new();
+is($struct->to_string, '<struct></struct>');
+
 $struct->add_member(foo => Protocol::XMLRPC::Value::String->new('bar'));
 is($struct->to_string, '<struct><member><name>foo</name><value><string>bar</string></value></member></struct>');
 is_deeply($struct->value, {foo => 'bar'});

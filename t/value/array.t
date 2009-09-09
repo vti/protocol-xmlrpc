@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 29;
+use Test::More tests => 30;
 
 use Protocol::XMLRPC::Value::String;
 use Protocol::XMLRPC::Value::Integer;
@@ -15,6 +15,8 @@ use_ok($class);
 is($class->type, 'array');
 
 my $array = $class->new();
+is($array->to_string, '<array><data></data></array>');
+
 $array->add_data(Protocol::XMLRPC::Value::String->new('bar'));
 is($array->to_string, '<array><data><value><string>bar</string></value></data></array>');
 is_deeply($array->value, ['bar']);

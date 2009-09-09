@@ -13,10 +13,10 @@ $value = Protocol::XMLRPC::ValueFactory->build();
 ok(not defined $value);
 
 $value = Protocol::XMLRPC::ValueFactory->build([]);
-ok(not defined $value);
+ok($value->isa('Protocol::XMLRPC::Value::Array'));
 
 $value = Protocol::XMLRPC::ValueFactory->build({});
-ok(not defined $value);
+ok($value->isa('Protocol::XMLRPC::Value::Struct'));
 
 $value = Protocol::XMLRPC::ValueFactory->build(-1);
 ok($value->isa('Protocol::XMLRPC::Value::Integer'));

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 21;
 
 use Protocol::XMLRPC::MethodResponse;
 
@@ -47,3 +47,11 @@ is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><struct
 $res = Protocol::XMLRPC::MethodResponse->new(123);
 is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><i4>123</i4></value></param></params></methodResponse>|);
 is($res->param->value, 123);
+
+$res = Protocol::XMLRPC::MethodResponse->new([]);
+is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><array><data></data></array></value></param></params></methodResponse>|);
+is_deeply($res->param->value, []);
+
+$res = Protocol::XMLRPC::MethodResponse->new({});
+is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><struct></struct></value></param></params></methodResponse>|);
+is_deeply($res->param->value, {});
