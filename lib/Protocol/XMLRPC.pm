@@ -8,7 +8,7 @@ use Protocol::XMLRPC::MethodResponse;
 
 require Carp;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub new {
     my $class = shift;
@@ -78,7 +78,8 @@ Protocol::XMLRPC - Asynchronous, web framework agnostic XML-RPC implementation
         }
     );
 
-    $xmlrpc->call('http://example.com/xmlrpc' => 'plus' => [1, 2] => sub {
+    $xmlrpc->call(
+        'http://example.com/xmlrpc' => 'plus' => [1, 2] => sub {
             my ($self, $method_response) = @_;
 
             if (!$method_response) {
@@ -99,7 +100,7 @@ L<Protocol::XMLRPC> is asynchronous, web framework agnostic XML-RPC
 implementation. You provide callback subroutine for posting method requests.
 L<LWP>, L<Mojo::Client> etc can be used for this purpose.
 
-XML-RPC defined different parameters types. Perl5 doesn't have scalar types,
+XML-RPC defines different parameters types. Perl5 has only strings,
 because of this types are guessed, but you can pass explicit type if guessing is
 wrong for you. Read more about parameter creation at
 L<Protocol::XMLRPC::ValueFactory>.

@@ -18,31 +18,21 @@ sub new {
     $self->{message_unknown_method}  ||= 'Unknown method';
     $self->{message_wrong_prototype} ||= 'Wrong prototype';
 
-    $self->{methods}->{'system.getCapabilities'} = {
-        ret => 'struct',
-        args    => [],
-        handler => sub {
-            return {
-                name => 'introspect',
+    $self->method(
+        'system.getCapabilities' => 'struct' => sub {
+            {   name => 'introspect',
                 specUrl =>
                   'http://xmlrpc-c.sourceforge.net/xmlrpc-c/introspection.html',
                 specVersion => 1
             };
-          }
-    };
+        }
+    );
 
-    $self->{methods}->{'system.listMethods'} = {
-        ret => 'array',
-        args    => [],
-        handler => sub {
-            return [sort keys %{$self->{methods}}];
-          }
-    };
+    $self->method('system.listMethods' => 'array' =>
+          sub { [sort keys %{$self->{methods}}]; });
 
-    $self->{methods}->{'system.methodSignature'} = {
-        ret => 'array',
-        args    => ['string'],
-        handler => sub {
+    $self->method(
+        'system.methodSignature' => 'array' => ['string'] => sub {
             my ($name) = @_;
 
             if (my $method = $self->{methods}->{$name->value}) {
@@ -50,24 +40,40 @@ sub new {
             }
 
             die $self->message_unknown_method;
-          }
-    };
+        }
+    );
 
-    $self->{methods}->{'system.methodHelp'} = {
-        ret => 'string',
-        args    => ['string'],
-        handler => sub {
+    $self->method(
+        'system.methodHelp' => 'string' => ['string'] => 'Method help' =>
+          sub {
             my ($name) = @_;
 
             if (my $method = $self->{methods}->{$name->value}) {
-                return $method->{descr};
+                return $method->{descr} || 'Description not available';
             }
 
             die $self->message_unknown_method;
-          }
-    };
+
+        }
+    );
 
     return $self;
+}
+
+sub method {
+    my $self  = shift;
+    my $name  = shift;
+    my $ret   = shift;
+    my $cb    = pop;
+    my $args  = ref $_[0] eq 'ARRAY' ? shift : [];
+    my $descr = shift;
+
+    $self->{methods}->{$name} = {
+        ret     => $ret,
+        args    => $args,
+        handler => $cb,
+        descr   => $descr
+    };
 }
 
 sub methods { defined $_[1] ? $_[0]->{methods} = $_[1] : $_[0]->{methods} }

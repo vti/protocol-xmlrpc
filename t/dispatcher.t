@@ -8,16 +8,11 @@ use Test::More tests => 11;
 use Protocol::XMLRPC::Dispatcher;
 use Protocol::XMLRPC::MethodCall;
 
-my $dispatcher = Protocol::XMLRPC::Dispatcher->new(
-    methods => {
-        plus => {
-            ret     => 'int',
-            args    => [qw/int int/],
-            descr   => 'Adds two integers and returns the result',
-            handler => sub { $_[0]->value + $_[1]->value; }
-        }
-    }
-);
+my $dispatcher = Protocol::XMLRPC::Dispatcher->new;
+
+$dispatcher->method(plus => int => [qw/int int/] =>
+      'Adds two integers and returns the result' =>
+      sub { $_[0]->value + $_[1]->value });
 
 my $method_response;
 
