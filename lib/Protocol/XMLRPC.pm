@@ -27,9 +27,14 @@ sub http_req_cb {
 
 sub call {
     my $self = shift;
-    my ($url, $method_name, $args, $cb) = @_;
+    my ($url, $method_name, $args, $cb, $error_cb) = @_;
 
-    ($cb, $args) = ($args, []) unless $cb;
+    if (!defined $cb) {
+        ($cb, $args) = ($args, []);
+    }
+    elsif (ref($args) ne 'ARRAY' && !defined $error_cb) {
+        ($cb, $error_cb, $args) = ($args, $cb, []);
+    }
 
     my $method_call = Protocol::XMLRPC::MethodCall->new(name => $method_name);
     foreach my $arg (@$args) {
@@ -51,7 +56,9 @@ sub call {
           sub {
             my ($self, $status, $headers, $body) = @_;
 
-            return $cb->($self) unless $status && $status == 200;
+            unless ($status && $status == 200) {
+                return $error_cb ? $error_cb->($self) : $cb->($self);
+            }
 
             return $cb->(
                 $self, Protocol::XMLRPC::MethodResponse->parse($body)
