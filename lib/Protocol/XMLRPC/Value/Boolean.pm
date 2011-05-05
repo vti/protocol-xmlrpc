@@ -7,6 +7,16 @@ use base 'Protocol::XMLRPC::Value';
 
 sub type {'boolean'}
 
+sub parse {
+    my $class = shift;
+    my $string = shift;
+
+    die "Invalid 'Boolean' value"
+      unless defined $string && $string =~ m/^(?:0|false|1|true)$/;
+
+    return $class->new($string, @_);
+}
+
 sub value {
     my $self = shift;
 

@@ -82,30 +82,39 @@ sub _parse_document {
     my ($doc) = @_;
 
     my ($method_response) = $doc->getElementsByTagName('methodResponse');
-    return unless $method_response;
+    die "Node <methodResponse> is missing" unless $method_response;
 
     if (my ($params) = $method_response->getElementsByTagName('params')) {
         my ($param) = $params->getElementsByTagName('param');
-        return unless $param;
+        die "Node <param> is missing" unless $param;
 
         my ($value) = $param->getElementsByTagName('value');
-        return unless $value;
+        die "Node <value> is missing" unless $value;
 
         $param = $class->_parse_value($value);
-        return unless $param;
+        die "Can't parse value" unless defined $param;
 
         return $class->new(_param => $param);
     }
     elsif (my ($fault) = $method_response->getElementsByTagName('fault')) {
         my ($value) = $fault->getElementsByTagName('value');
+        die "Node <value> is missing" unless defined $value;
 
         my $struct = $class->_parse_value($value);
-        return unless $struct && $struct->type eq 'struct';
+        die "Value must be 'Struct'" unless $struct && $struct->type eq 'struct';
 
         return $class->new(_fault => $struct);
     }
 
-    return;
+    die "Node <params> or <fault> is missing";
+}
+
+sub to_data {
+    my $self = shift;
+
+    my $data = [];
+
+    return $data;
 }
 
 sub to_string {
@@ -122,7 +131,7 @@ sub to_string {
 
         $string .= '</fault>';
     }
-    elsif (my $param = $self->param) {
+    elsif (defined(my $param = $self->param)) {
         $string .= '<params>';
 
         $string .= "<param><value>$param</value></param>";

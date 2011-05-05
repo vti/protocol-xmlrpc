@@ -17,5 +17,5 @@ is($value->to_string, "<base64>Zm9v\n</base64>");
 $value = $class->parse("Zm9v\n");
 is($value->to_string, "<base64>Zm9v\n</base64>");
 
-$value = $class->parse("&^");
-is($value->to_string, "<base64></base64>");
+eval { $class->parse("&^"); };
+ok($@);

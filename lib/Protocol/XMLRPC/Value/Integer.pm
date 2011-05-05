@@ -13,6 +13,16 @@ sub new {
     return $self;
 }
 
+sub parse {
+    my $class = shift;
+    my $string = shift;
+
+    die "Invalid 'Integer' value"
+      unless defined $string && $string =~ m/^(?:\+|-)?\d+$/;
+
+    return $class->new($string, @_);
+}
+
 sub alias { defined $_[1] ? $_[0]->{alias} = $_[1] : $_[0]->{alias} }
 
 sub type {'int'}

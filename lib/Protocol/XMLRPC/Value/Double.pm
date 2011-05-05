@@ -7,6 +7,16 @@ use base 'Protocol::XMLRPC::Value';
 
 sub type {'double'}
 
+sub parse {
+    my $class = shift;
+    my $string = shift;
+
+    die "Invalid 'Double' value"
+      unless defined $string && $string =~ m/^(?:\+|-)?\d+(?:\.\d+)?$/;
+
+    return $class->new($string, @_);
+}
+
 sub to_string {
     my $self = shift;
 

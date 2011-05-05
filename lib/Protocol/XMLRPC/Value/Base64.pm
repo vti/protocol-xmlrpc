@@ -13,6 +13,8 @@ sub parse {
     my $class = shift;
     my ($value) = @_;
 
+    die "Invalid 'Base64' value" unless $value =~ m/^[A-Za-z0-9\+\/=]+$/;
+
     return $class->new(MIME::Base64::decode_base64($value));
 }
 

@@ -7,19 +7,24 @@ use Test::More tests => 14;
 
 use Protocol::XMLRPC::MethodResponse;
 
-ok(not defined Protocol::XMLRPC::MethodResponse->parse());
+eval{Protocol::XMLRPC::MethodResponse->parse()};
+ok($@);
 
 my $xml = qq|abcde|;
-ok(not defined Protocol::XMLRPC::MethodResponse->parse($xml));
+eval{Protocol::XMLRPC::MethodResponse->parse($xml)};
+ok($@);
 
 $xml = qq|<?xml version="1.0"?><methodResponse><params><param><value><strng>BarFoo</strng></value></param></params></methodResponse>|;
-ok(not defined Protocol::XMLRPC::MethodResponse->parse($xml));
+eval{Protocol::XMLRPC::MethodResponse->parse($xml)};
+ok($@);
 
 $xml = qq|<?xml version="1.0"?><methodResponse><params><param><value><array><data><value><i4>12</i4></value><value><string>Foo</string></value><value><bolean>0</boolean></value><value><double>-31.2</double></value></data></array></value></param></params></methodResponse>|;
-ok(not defined Protocol::XMLRPC::MethodResponse->parse($xml));
+eval{Protocol::XMLRPC::MethodResponse->parse($xml)};
+ok($@);
 
 $xml = qq|<?xml version="1.0"?><methodResponse><fault><value><string>foo</string></value></fault></methodResponse>|;
-ok(not defined Protocol::XMLRPC::MethodResponse->parse($xml));
+eval{Protocol::XMLRPC::MethodResponse->parse($xml)};
+ok($@);
 
 $xml = qq|<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>4</int></value></member><member><name>faultString</name><value><string>Too many parameters.</string></value></member></struct></value></fault></methodResponse>|;
 my $res = Protocol::XMLRPC::MethodResponse->parse($xml);

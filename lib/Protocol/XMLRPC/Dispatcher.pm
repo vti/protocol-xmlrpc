@@ -102,8 +102,10 @@ sub dispatch {
 
     my $method_response = Protocol::XMLRPC::MethodResponse->new;
 
-    my $method_call = Protocol::XMLRPC::MethodCall->parse($xml);
-    unless ($method_call) {
+    my $method_call;
+
+    eval { $method_call = Protocol::XMLRPC::MethodCall->parse($xml); };
+    if ($@) {
         $method_response->fault(-1 => $self->message_corrupted);
         return $cb->($method_response);
     }

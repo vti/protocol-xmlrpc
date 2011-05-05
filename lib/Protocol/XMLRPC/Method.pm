@@ -32,7 +32,7 @@ sub parse {
     my $parser = XML::LibXML->new;
     my $doc;
     eval {$doc = $parser->parse_string($xml); };
-    return if $@;
+    die "Can't parse XML: $@" if $@;
 
     return $class->_parse_document($doc);
 }
@@ -53,41 +53,23 @@ sub _parse_value {
     my ($type) = grep { $_->isa('XML::LibXML::Element') } @types;
 
     if ($type->getName eq 'string') {
-        my $value = $type->textContent;
-
-        return Protocol::XMLRPC::Value::String->new($value);
+        return Protocol::XMLRPC::Value::String->new($type->textContent);
     }
     elsif ($type->getName eq 'i4' || $type->getName eq 'int') {
-        my $value = $type->textContent;
-        return unless $value =~ m/^(?:\+|-)?\d+$/;
-
-        return Protocol::XMLRPC::Value::Integer->new($type->textContent,
+        return Protocol::XMLRPC::Value::Integer->parse($type->textContent,
             alias => $type->getName);
     }
     elsif ($type->getName eq 'double') {
-        my $value = $type->textContent;
-        return unless $value =~ m/^(?:\+|-)?\d+(?:\.\d+)?$/;
-
-        return Protocol::XMLRPC::Value::Double->new($type->textContent);
+        return Protocol::XMLRPC::Value::Double->parse($type->textContent);
     }
     elsif ($type->getName eq 'boolean') {
-        my $value = $type->textContent;
-        return unless $value =~ m/^(?:0|false|1|true)$/;
-
-        return Protocol::XMLRPC::Value::Boolean->new($type->textContent);
+        return Protocol::XMLRPC::Value::Boolean->parse($type->textContent);
     }
     elsif ($type->getName eq 'dateTime.iso8601') {
-        my $value = $type->textContent;
-        return
-          unless $value =~ m/^(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)$/;
-
         return Protocol::XMLRPC::Value::DateTime->parse($type->textContent);
     }
     elsif ($type->getName eq 'base64') {
-        my $value = $type->textContent;
-        return unless $value =~ m/^[A-Za-z0-9\+\/=]+$/;
-
-        return Protocol::XMLRPC::Value::Base64->parse($value);
+        return Protocol::XMLRPC::Value::Base64->parse($type->textContent);
     }
     elsif ($type->getName eq 'struct') {
         my $struct = Protocol::XMLRPC::Value::Struct->new;
@@ -125,7 +107,7 @@ sub _parse_value {
         return $array;
     }
 
-    return;
+    die "Unknown type '" . $type->getName . "'";
 }
 
 1;

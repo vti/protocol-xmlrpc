@@ -24,7 +24,7 @@ sub parse {
           Time::Local::timegm($second, $minute, $hour, $mday, --$month, $year);
     };
 
-    return if $@ || $epoch < 0;
+    die "Invalid 'DateTime' value" if $@ || $epoch < 0;
 
     return $class->new($epoch);
 }

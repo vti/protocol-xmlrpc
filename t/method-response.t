@@ -3,20 +3,27 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 23;
 
 use Protocol::XMLRPC::MethodResponse;
 
-ok(not defined Protocol::XMLRPC::MethodResponse->parse);
+eval { Protocol::XMLRPC::MethodResponse->parse };
+ok($@);
 
 my $xml = qq|<?xml version="1.0"?><methodResponse><params><param><value>FooBar</value></param></params></methodResponse>|;
 my $res = Protocol::XMLRPC::MethodResponse->parse($xml);
 is($res->param->value, 'FooBar');
 is("$res", qq|<?xml version="1.0"?><methodResponse><params><param><value><string>FooBar</string></value></param></params></methodResponse>|);
+#is_deeply($res->to_data, ['FooBar']);
 
 $xml = qq|<?xml version="1.0"?><methodResponse><params><param><value><string>BarFoo</string></value></param></params></methodResponse>|;
 $res = Protocol::XMLRPC::MethodResponse->parse($xml);
 is($res->param->value, 'BarFoo');
+is("$res", $xml);
+
+$xml = qq|<?xml version="1.0"?><methodResponse><params><param><value><boolean>false</boolean></value></param></params></methodResponse>|;
+$res = Protocol::XMLRPC::MethodResponse->parse($xml);
+is($res->param->value, 'false');
 is("$res", $xml);
 
 $xml = q|<?xml version="1.0"?><methodResponse><params><param><value><i4>123</i4></value></param></params></methodResponse>|;
