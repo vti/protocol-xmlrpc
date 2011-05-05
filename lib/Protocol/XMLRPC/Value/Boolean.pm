@@ -7,17 +7,55 @@ use base 'Protocol::XMLRPC::Value';
 
 sub type {'boolean'}
 
+sub value {
+    my $self = shift;
+
+    if (@_) {
+        my $value = shift;
+
+        if (ref($value) eq 'SCALAR') {
+            $value = $$value ? 1 : 0;
+        }
+        else {
+            $value = $value eq 'true' ? 1 : $value eq 'false' ? 0 : !!$value;
+        }
+
+        $self->{value} =
+          $value
+          ? Protocol::XMLRPC::Value::_True->new
+          : Protocol::XMLRPC::Value::_False->new;
+
+        return $self;
+    }
+
+    return $self->{value};
+}
+
 sub to_string {
     my $self = shift;
 
     my $value = $self->value;
 
-    if (ref($value) eq 'SCALAR') {
-        $value = $$value ? 1 : 0;
-    }
-
     return "<boolean>$value</boolean>";
 }
+
+package Protocol::XMLRPC::Value::_True;
+
+use overload '""'   => sub {'true'}, fallback => 1;
+use overload 'bool' => sub {1},      fallback => 1;
+use overload 'eq' => sub { $_[1] eq 'true' ? 1 : 0; }, fallback => 1;
+use overload '==' => sub { $_[1] == 1 ? 1 : 0; }, fallback => 1;
+
+sub new { bless {}, $_[0] }
+
+package Protocol::XMLRPC::Value::_False;
+
+use overload '""'   => sub {'false'}, fallback => 1;
+use overload 'bool' => sub {0},       fallback => 1;
+use overload 'eq' => sub { $_[1] eq 'false' ? 1 : 0; }, fallback => 1;
+use overload '==' => sub { $_[1] == 0 ? 1 : 0; }, fallback => 1;
+
+sub new { bless {}, $_[0] }
 
 1;
 __END__
@@ -28,9 +66,9 @@ Protocol::XMLRPC::Value::Boolean - XML-RPC array
 
 =head1 SYNOPSIS
 
-    my $true  = Protocol::XMLRPC::Value::Boolean->new(1);
+    my $true  = Protocol::XMLRPC::Value::Boolean->new(\1);
     my $true  = Protocol::XMLRPC::Value::Boolean->new('true');
-    my $false = Protocol::XMLRPC::Value::Boolean->new(0);
+    my $false = Protocol::XMLRPC::Value::Boolean->new(\0);
     my $false = Protocol::XMLRPC::Value::Boolean->new('false');
 
 =head1 DESCRIPTION
@@ -49,7 +87,7 @@ Returns 'boolean'.
 
 =head2 C<value>
 
-    my $boolean = Protocol::XMLRPC::Value::Boolean->new(1);
+    my $boolean = Protocol::XMLRPC::Value::Boolean->new(\1);
     # $boolean->value returns 1
 
     my $boolean = Protocol::XMLRPC::Value::Boolean->new('false');
@@ -59,20 +97,7 @@ Returns serialized Perl5 boolean.
 
 =head2 C<to_string>
 
-    my $boolean = Protocol::XMLRPC::Value::Boolean->new(1);
+    my $boolean = Protocol::XMLRPC::Value::Boolean->new(\1);
     # $boolean->to_string is now '<boolean>1</boolean>'
 
 XML-RPC boolean string representation.
-
-=head1 AUTHOR
-
-Viacheslav Tykhanovskyi, C<vti@cpan.org>.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009, Viacheslav Tykhanovskyi.
-
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
-
-=cut

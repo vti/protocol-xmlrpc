@@ -3,7 +3,8 @@ package Protocol::XMLRPC::Value;
 use strict;
 use warnings;
 
-use overload '""' => sub { shift->to_string }, fallback => 1;
+use overload '""'   => sub { shift->to_string }, fallback => 1;
+use overload 'bool' => sub { shift->value }, fallback => 1;
 
 sub new {
     my $class = shift;
@@ -61,16 +62,3 @@ Returns new L<Protocol::XMLRPC::Value> instance.
 =head2 C<to_string>
 
 String representation.
-
-=head1 AUTHOR
-
-Viacheslav Tykhanovskyi, C<vti@cpan.org>.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009, Viacheslav Tykhanovskyi.
-
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
-
-=cut

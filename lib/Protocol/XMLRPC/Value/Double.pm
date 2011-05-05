@@ -53,16 +53,3 @@ Returns serialized Perl5 scalar.
     # $double->to_string is now '<double>1.2</double>'
 
 XML-RPC double string representation.
-
-=head1 AUTHOR
-
-Viacheslav Tykhanovskyi, C<vti@cpan.org>.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009, Viacheslav Tykhanovskyi.
-
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
-
-=cut

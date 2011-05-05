@@ -97,7 +97,7 @@ sub _parse_value {
             my ($name) = $member->getElementsByTagName('name');
             my ($value) = $member->getElementsByTagName('value');
 
-            if (my $param = $self->_parse_value($value)) {
+            if (defined(my $param = $self->_parse_value($value))) {
                 $struct->add_member($name->textContent => $param);
             }
             else {
@@ -114,7 +114,7 @@ sub _parse_value {
 
         my (@values) = grep {$_->isa('XML::LibXML::Element')} $data->childNodes;
         foreach my $value (@values) {
-            if (my $param = $self->_parse_value($value)) {
+            if (defined(my $param = $self->_parse_value($value))) {
                 $array->add_data($param);
             }
             else {
@@ -158,16 +158,3 @@ L<Protocol::XMLRPC::MethodCall>. Used internally.
 =head2 C<parse>
 
 Parses xml.
-
-=head1 AUTHOR
-
-Viacheslav Tykhanovskyi, C<vti@cpan.org>.
-
-=head1 COPYRIGHT
-
-Copyright (C) 2009, Viacheslav Tykhanovskyi.
-
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
-
-=cut
