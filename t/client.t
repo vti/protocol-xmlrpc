@@ -5,10 +5,10 @@ use warnings;
 
 use Test::More tests => 9;
 
-use Protocol::XMLRPC;
+use Protocol::XMLRPC::Client;
 
-Protocol::XMLRPC->new(http_req_cb => sub { $_[-1]->($_[0], 500, {}, '') })
-  ->call(
+Protocol::XMLRPC::Client->new(
+    http_req_cb        => sub       { $_[-1]->($_[0], 500, {}, '') })->call(
     'http://empty.com' => 'foo.bar' => sub {
     },
     sub {
@@ -16,16 +16,16 @@ Protocol::XMLRPC->new(http_req_cb => sub { $_[-1]->($_[0], 500, {}, '') })
 
         ok($self);
     }
-  );
+    );
 
-Protocol::XMLRPC->new(http_req_cb => sub { $_[-1]->($_[0], 500, {}, '') })
-  ->call(
+Protocol::XMLRPC::Client->new(
+    http_req_cb        => sub       { $_[-1]->($_[0], 500, {}, '') })->call(
     'http://empty.com' => 'foo.bar' => sub {
         is(scalar @_, 1);
     }
-  );
+    );
 
-Protocol::XMLRPC->new(
+Protocol::XMLRPC::Client->new(
     http_req_cb => sub {
         my ($self, $url, $method, $headers, $body, $cb) = @_;
 
@@ -47,7 +47,7 @@ Protocol::XMLRPC->new(
     }
   );
 
-Protocol::XMLRPC->new(
+Protocol::XMLRPC::Client->new(
     http_req_cb => sub {
         is($_[4],
             '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><i4>1</i4></value></param></params></methodCall>'
@@ -55,7 +55,7 @@ Protocol::XMLRPC->new(
     }
 )->call('' => 'foo.bar' => [1] => sub { });
 
-Protocol::XMLRPC->new(
+Protocol::XMLRPC::Client->new(
     http_req_cb => sub {
         is($_[4],
             '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>1</string></value></param></params></methodCall>'
@@ -65,7 +65,7 @@ Protocol::XMLRPC->new(
   ->call(
     '' => 'foo.bar' => [Protocol::XMLRPC::Value::String->new(1)] => sub { });
 
-Protocol::XMLRPC->new(
+Protocol::XMLRPC::Client->new(
     http_req_cb => sub {
         is($_[4],
             '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><array><data><value><string>1</string></value></data></array></value></param></params></methodCall>'
@@ -76,7 +76,7 @@ Protocol::XMLRPC->new(
     '' => 'foo.bar' => [[Protocol::XMLRPC::Value::String->new(1)]] => sub { }
   );
 
-Protocol::XMLRPC->new(
+Protocol::XMLRPC::Client->new(
     http_req_cb => sub {
         is($_[4],
             '<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><struct><member><name>foo</name><value><string>bar</string></value></member></struct></value></param></params></methodCall>'
