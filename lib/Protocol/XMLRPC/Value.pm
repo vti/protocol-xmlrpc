@@ -18,7 +18,7 @@ sub new {
     return $self;
 }
 
-sub value { defined $_[1] ? $_[0]->{value} = $_[1] : $_[0]->{value} }
+sub value { @_ > 1 ? $_[0]->{value} = $_[1] : $_[0]->{value} }
 
 sub to_string { '' }
 

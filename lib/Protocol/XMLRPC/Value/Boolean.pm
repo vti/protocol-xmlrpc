@@ -12,6 +12,10 @@ sub to_string {
 
     my $value = $self->value;
 
+    if (ref($value) eq 'SCALAR') {
+        $value = $$value ? 1 : 0;
+    }
+
     return "<boolean>$value</boolean>";
 }
 
