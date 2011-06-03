@@ -60,7 +60,9 @@ sub call {
 
             my $res = Protocol::XMLRPC::MethodResponse->parse($body);
 
-            return $error_cb ? $error_cb->($self) : $cb->($self, $res);
+            return $cb->($self, $res) if $res;
+
+            return $error_cb ? $error_cb->($self) : $cb->($self);
         }
     );
 }

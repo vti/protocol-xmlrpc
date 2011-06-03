@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 use Protocol::XMLRPC::Client;
 
@@ -44,6 +44,20 @@ Protocol::XMLRPC::Client->new(
         my ($self, $method_response) = @_;
 
         ok($method_response);
+    }
+  );
+
+Protocol::XMLRPC::Client->new(
+    http_req_cb => sub {
+        my ($self, $url, $method, $headers, $body, $cb) = @_;
+
+        $cb->($self, 400, {}, '');
+    }
+  )->call(
+    '' => 'foo.bar' => sub {
+    },
+    sub {
+        ok($_[0]);
     }
   );
 
