@@ -77,6 +77,8 @@ sub param {
     }
 }
 
+sub value { shift->param->value }
+
 sub _parse_document {
     my $class = shift;
     my ($doc) = @_;
@@ -107,14 +109,6 @@ sub _parse_document {
     }
 
     die "Node <params> or <fault> is missing";
-}
-
-sub to_data {
-    my $self = shift;
-
-    my $data = [];
-
-    return $data;
 }
 
 sub to_string {
