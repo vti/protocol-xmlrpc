@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 my $class = 'Protocol::XMLRPC::MethodCall';
 
@@ -12,6 +12,15 @@ use_ok($class);
 my $method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
 is("$method_call", qq|<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params></params></methodCall>|);
 
+$method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
+$method_call->add_param('');
+is("$method_call", qq|<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string></string></value></param></params></methodCall>|);
+
+$method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
+$method_call->add_param(0);
+is("$method_call", qq|<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><i4>0</i4></value></param></params></methodCall>|);
+
+$method_call = Protocol::XMLRPC::MethodCall->new(name => 'foo.bar');
 $method_call->add_param('foo');
 is("$method_call", qq|<?xml version="1.0"?><methodCall><methodName>foo.bar</methodName><params><param><value><string>foo</string></value></param></params></methodCall>|);
 

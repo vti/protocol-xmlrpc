@@ -26,7 +26,7 @@ sub add_param {
     my $param = shift;
 
     my $value = Protocol::XMLRPC::ValueFactory->build($param);
-    return unless $value;
+    return unless defined $value;
 
     push @{$self->params}, $value;
 }
