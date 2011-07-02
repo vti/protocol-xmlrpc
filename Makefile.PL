@@ -41,6 +41,6 @@ WriteMakefile(
         'Time::Local'  => 0,
         'XML::LibXML'  => 0,
     },
-    clean => {FILES => 'Protocol-XMLRPC-*'} test =>
-      {TESTS => 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t'}
+    clean => {FILES => 'Protocol-XMLRPC-*'},
+    test  => {TESTS => 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t'}
 );
