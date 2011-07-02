@@ -1,0 +1,10 @@
+Revision history for perl module Protocol::XMLRPC
+
+0.09 2011-07-02
+
+ - Fixed empty values
+ - Fixed error callback invocation
+ - Throw exceptions on every unexpected situation
+ - Simplified response error handling
+ - Improved type guessing
+
