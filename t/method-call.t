@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 19;
 
 my $class = 'Protocol::XMLRPC::MethodCall';
 
@@ -47,3 +47,18 @@ is($method_call->name, 'foo.bar');
 
 is(@{$method_call->params}, 1);
 is($method_call->params->[0]->value, 'foo');
+
+$method_call = Protocol::XMLRPC::MethodCall->parse(<<'EOF');
+<?xml version="1.0"?>
+<methodCall>
+<methodName>test</methodName>
+<params>
+<param>
+<value><int>0</int></value>
+</param>
+</params>
+</methodCall>
+EOF
+is($method_call->name, 'test');
+is($method_call->params->[0]->value, 0);
+is(@{$method_call->params}, 1);

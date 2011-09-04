@@ -48,11 +48,11 @@ sub _parse_document {
         foreach my $param (@params) {
             my ($value) = $param->getElementsByTagName('value');
 
-            if (my $param = $self->_parse_value($value)) {
+            if (defined(my $param = $self->_parse_value($value))) {
                 push @{$self->params}, $param;
             }
             else {
-                return;
+                Carp::croak("Could not parse value of " .  $value->serialize);
             }
         }
     }

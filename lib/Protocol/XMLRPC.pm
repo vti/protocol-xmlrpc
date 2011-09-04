@@ -61,6 +61,10 @@ A simple server for XML-RPC calls.
 
     http://github.com/vti/protocol-xmlrpc/
 
+=head1 CREDITS
+
+Jan Harders
+
 =head1 AUTHOR
 
 Viacheslav Tykhanovskyi, C<vti@cpan.org>.
