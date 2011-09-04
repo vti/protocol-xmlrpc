@@ -74,9 +74,9 @@ sub _parse_value {
     elsif ($type->getName eq 'struct') {
         my $struct = Protocol::XMLRPC::Value::Struct->new;
 
-        my @members = $type->getElementsByTagName('member');
+        my @members = $type->findnodes('member')->get_nodelist;
         foreach my $member (@members) {
-            my ($name) = $member->getElementsByTagName('name');
+            my ($name)  = $member->getElementsByTagName('name');
             my ($value) = $member->getElementsByTagName('value');
 
             if (defined(my $param = $self->_parse_value($value))) {
