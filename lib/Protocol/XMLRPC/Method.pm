@@ -31,8 +31,12 @@ sub parse {
 
     my $parser = XML::LibXML->new;
     my $doc;
-    eval {$doc = $parser->parse_string($xml); };
-    die "Can't parse XML: $@" if $@;
+    eval {
+        $doc = $parser->parse_string($xml);
+        1;
+    } or do {
+        die "Can't parse XML: $@";
+    };
 
     return $class->_parse_document($doc);
 }

@@ -104,11 +104,13 @@ sub dispatch {
 
     my $method_call;
 
-    eval { $method_call = Protocol::XMLRPC::MethodCall->parse($xml); };
-    if ($@) {
+    eval {
+        $method_call = Protocol::XMLRPC::MethodCall->parse($xml);
+        1;
+    } or do {
         $method_response->fault(-1 => $self->message_corrupted);
         return $cb->($method_response);
-    }
+    };
 
     my $method_name = $method_call->name;
 
