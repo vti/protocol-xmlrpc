@@ -16,6 +16,14 @@ sub parse {
     my ($year, $month, $mday, $hour, $minute, $second) =
       ($datetime =~ m/(\d\d\d\d)(\d\d)(\d\d)T(\d\d):(\d\d):(\d\d)/);
 
+    die "Invalid 'Datetime' value"
+      unless defined $year
+          && defined $month
+          && defined $mday
+          && defined $hour
+          && defined $minute
+          && defined $second;
+
     my $epoch;
 
     # Prevent crash
@@ -24,8 +32,10 @@ sub parse {
           Time::Local::timegm($second, $minute, $hour, $mday, --$month, $year);
         1;
     } or do {
-        die "Invalid 'DateTime' value" if $@ || $epoch < 0;
+        die "Invalid 'DateTime' value";
     };
+
+    die "Invalid 'DateTime' value" if $epoch < 0;
 
     return $class->new($epoch);
 }
