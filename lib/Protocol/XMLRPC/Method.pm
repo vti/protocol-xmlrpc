@@ -49,6 +49,9 @@ sub _parse_value {
     if (@types == 1 && !$types[0]->isa('XML::LibXML::Element')) {
         return Protocol::XMLRPC::Value::String->new($types[0]->textContent);
     }
+    elsif (@types == 0) {
+        return Protocol::XMLRPC::Value::String->new('');
+    }
 
     my ($type) = grep { $_->isa('XML::LibXML::Element') } @types;
 

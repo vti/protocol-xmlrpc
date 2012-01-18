@@ -1,7 +1,8 @@
 Revision history for perl module Protocol::XMLRPC
 
-0.10 2011-09-04
+0.10 2012-01-18
 
+ - Fixed empty values parsing (Knut Arne Bjørndal)
  - Fixed nested structs parsing (Jan Harders)
  - Fixed zero value handling (Jan Harders)
 
